@@ -1,5 +1,8 @@
 # update-all-json-blob
 
+Rails v7.0.3
+Postgres v9.5.13-alpine
+
 ## getting started
 
     docker compose run --rm web rails bin/rails db:setup
