@@ -21,12 +21,17 @@
 In this case, our `config` column is a `json` type and postgres only has a function for jsonb named `jsonb_set` so we must cast `config` to the correct type by appending `::jsonb`.
 
     irb> Cat.where("(config -> 'features' ->> 'chonky')::boolean = ?", true).update_all(
-    irb*   "config = jsonb_set(config::jsonb, '{features,chonky}', to_json(#{false}::boolean)::jsonb)"
-    irb> )
+           "config = jsonb_set(config::jsonb, '{features,chonky}', to_json(#{false}::boolean)::jsonb)"
+         )
+
+Results in the following query:
+
       Cat Update All (2.1ms)  UPDATE "cats" SET config = jsonb_set(config::jsonb, '{features,chonky}'::text[], to_json(false::boolean)::jsonb) WHERE ((config -> 'features' ->> 'chonky')::boolean = TRUE)
     => 2
 
-    irb(main):026:0> Cat.where
+If we query all records again we can see our changes:
+
+    irb> Cat.where
       Cat Load (0.7ms)  SELECT "cats".* FROM "cats"
     =>
     #<ActiveRecord::QueryMethods::WhereChain:0x00007f362251be68
